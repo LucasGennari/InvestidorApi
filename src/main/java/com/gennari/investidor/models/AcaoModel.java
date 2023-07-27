@@ -10,6 +10,7 @@ import jakarta.persistence.*;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -30,7 +31,8 @@ public class AcaoModel implements Serializable {
     private String cnpj;
 
     private BigDecimal precoAtual;
-    private String atualizadaEm;
+    private LocalDateTime criadoEm;
+    private LocalDateTime atualizadoEm;
 
     public UUID getAcaoId() {
         return acaoId;
@@ -72,11 +74,19 @@ public class AcaoModel implements Serializable {
         this.precoAtual = precoAtual;
     }
 
-    public String getAtualizadaEm() {
-        return atualizadaEm;
+    public LocalDateTime getAtualizadoEm() {
+        return atualizadoEm;
     }
 
-    public void setAtualizadaEm(String atualizadaEm) {
-        this.atualizadaEm = atualizadaEm;
+    public void setAtualizadoEm(LocalDateTime atualizadaEm) {
+        this.atualizadoEm = atualizadaEm;
+    }
+
+    public LocalDateTime getCriadoEm() {
+        return criadoEm;
+    }
+
+    public void setCriadoEm(LocalDateTime criadoEm) {
+        this.criadoEm = criadoEm;
     }
 }

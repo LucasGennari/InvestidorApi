@@ -1,3 +1,7 @@
+/* Projeto API-INVESTIDOR
+ * Interface AcaoRepository, criada em 13/07/2023
+ * Lucas Gennari do Nascimento
+ */
 package com.gennari.investidor.repositories;
 
 import com.gennari.investidor.models.AcaoModel;
