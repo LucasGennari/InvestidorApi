@@ -6,6 +6,7 @@ package com.gennari.investidor.services;
 
 import com.gennari.investidor.models.AcaoModel;
 import com.gennari.investidor.repositories.AcaoRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,6 +21,7 @@ public class AcaoService {
         this.acaoRepository = acaoRepository;
     }
 
+    @Transactional
     public AcaoModel save(AcaoModel acaoModel){
         return acaoRepository.save(acaoModel);
     }

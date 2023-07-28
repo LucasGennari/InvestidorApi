@@ -1,3 +1,7 @@
+/* Projeto API-INVESTIDOR
+ * Classe OrdemRepository, criada em 27/07/2023
+ * Lucas Gennari do Nascimento
+ */
 package com.gennari.investidor.repositories;
 
 import com.gennari.investidor.models.OrdemModel;
