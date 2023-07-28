@@ -37,9 +37,12 @@ public class InvestidorController {
 
     @PostMapping
     public ResponseEntity<InvestidorModel> saveInvestidor(@RequestBody @Valid InvestidorRecordDTO investidorDTO){
+
         var investidorModel = new InvestidorModel();
+
         BeanUtils.copyProperties(investidorDTO, investidorModel);
         investidorModel.setCriadoEm(LocalDateTime.now(ZoneId.of("UTC")));
+
         return ResponseEntity.status(HttpStatus.CREATED).body(investidorService.save(investidorModel));
     }
 
@@ -52,7 +55,7 @@ public class InvestidorController {
     @GetMapping("/{id}")
     public ResponseEntity<Object> getOneInvestidor(@PathVariable(value="id") UUID id){
         Optional<InvestidorModel> investidor = investidorService.findById(id);
-        if(investidor.isEmpty()){
+        if (investidor.isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Investidor inexistente");
 
         }
@@ -63,27 +66,29 @@ public class InvestidorController {
     public ResponseEntity<Object> updateInvestidor(@PathVariable(value="id") UUID id,
                                                    @RequestBody InvestidorRecordDTO investidorRecordDTO){
         Optional<InvestidorModel> investidor = investidorService.findById(id);
-        if(investidor.isEmpty()){
+        if (investidor.isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Investidor inexistente");
-
         }
-        //System.out.println(investidor.get().getNome());
+
         var investidorModel = investidor.get();
+
         BeanUtils.copyProperties(investidorRecordDTO, investidorModel);
         investidorModel.setAtualizadoEm(LocalDateTime.now(ZoneId.of("UTC")));
 
-        //return ResponseEntity.status(HttpStatus.OK).body(investidorModel);
         return ResponseEntity.status(HttpStatus.OK).body(investidorService.save(investidorModel));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteInvestidor(@PathVariable(value="id") UUID id){
-        Optional<InvestidorModel> investidor = investidorService.findById(id);
-        if(investidor.isEmpty()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Investidor inexistente");
 
+        Optional<InvestidorModel> investidor = investidorService.findById(id);
+
+        if (investidor.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Investidor inexistente");
         }
+
         investidorService.delete(investidor.get());
+
         return ResponseEntity.status(HttpStatus.OK).body("Investidor deletado");
     }
 }

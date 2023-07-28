@@ -27,43 +27,34 @@ import java.util.UUID;
 public class OrdemController {
 
     final OrdemService ordemService;
-    final InvestidorService investidorService;
-    final AcaoService acaoService;
 
 
-    public OrdemController(OrdemService ordemService, InvestidorService investidorService, AcaoService acaoService) {
+
+    public OrdemController(OrdemService ordemService) {
         this.ordemService = ordemService;
-        this.investidorService = investidorService;
-        this.acaoService = acaoService;
+
     }
 
     @PostMapping("/ordens/{investidorId}/{acaoId}")
     public ResponseEntity<Object> saveOrdem(@PathVariable UUID investidorId,
                                                 @PathVariable UUID acaoId,
                                                 @RequestBody @Valid OrdemRecordDTO ordemRecordDTO){
-        Optional<InvestidorModel> investidor = investidorService.findById(investidorId);
-        Optional<AcaoModel> acao = acaoService.findById(acaoId);
-        if(investidor.isEmpty() && acao.isEmpty()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Investidor ou ação não encontrada");
 
-        } else{
-              var ordemModel = new OrdemModel();
-              var investidorModel = investidor.get();
-              var acaoModel = acao.get();
+              var ordemModel = ordemService.create(investidorId, acaoId, ordemRecordDTO);
 
-              BeanUtils.copyProperties(ordemRecordDTO, ordemModel);
+              if(ordemModel == null){
 
-              ordemModel.setInvestidorModel(investidorModel);
-              ordemModel.setAcaoModel(acaoModel);
-              ordemModel.setCriadoEm(LocalDateTime.now(ZoneId.of("UTC")));
+                  return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Investidor ou ação inexistente");
+              } else{
 
-              return ResponseEntity.status(HttpStatus.OK).body(ordemService.save(ordemModel));
+                  return ResponseEntity.status(HttpStatus.OK).body(ordemService.save(ordemModel));
+              }
 
         }
 
-    }
 
-    @GetMapping
+
+    @GetMapping("/ordens")
     public ResponseEntity<List<OrdemModel>> getAllOrdens(){
         return ResponseEntity.status(HttpStatus.OK).body(ordemService.findAll());
     }
