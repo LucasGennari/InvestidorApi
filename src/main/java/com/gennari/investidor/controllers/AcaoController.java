@@ -78,6 +78,6 @@ public class AcaoController {
 
         }
         acaoService.delete(acao.get());
-        return ResponseEntity.status(HttpStatus.OK).body("Ação deletado");
+        return ResponseEntity.status(HttpStatus.OK).body("Ação deletada");
     }
 }
