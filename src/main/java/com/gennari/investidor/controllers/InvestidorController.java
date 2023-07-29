@@ -5,24 +5,22 @@
 
 package com.gennari.investidor.controllers;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import com.gennari.investidor.dto.InvestidorRecordDTO;
 import com.gennari.investidor.models.InvestidorModel;
-import com.gennari.investidor.repositories.InvestidorRepository;
 import com.gennari.investidor.services.InvestidorService;
 import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import javax.swing.text.html.Option;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
 
 @RestController
 @RequestMapping("/investidores")
@@ -49,7 +47,14 @@ public class InvestidorController {
 
     @GetMapping
     public ResponseEntity<List<InvestidorModel>> getAllInvestidores(){
-        return ResponseEntity.status(HttpStatus.OK).body(investidorService.findAll());
+        List<InvestidorModel> investidorList = investidorService.findAll();
+        if(!investidorList.isEmpty()){
+            for(InvestidorModel investidor : investidorList){
+                UUID id = investidor.getInvestidorId();
+                investidor.add(linkTo(methodOn(InvestidorController.class).getOneInvestidor(id)).withSelfRel());
+            }
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(investidorList);
     }
 
     @GetMapping("/{id}")
@@ -57,8 +62,8 @@ public class InvestidorController {
         Optional<InvestidorModel> investidor = investidorService.findById(id);
         if (investidor.isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Investidor inexistente");
-
         }
+        investidor.get().add(linkTo(methodOn(InvestidorController.class).getAllInvestidores()).withSelfRel());
         return ResponseEntity.status(HttpStatus.OK).body(investidor.get());
     }
 

@@ -4,6 +4,8 @@
  */
 package com.gennari.investidor.controllers;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import com.gennari.investidor.dto.AcaoRecordDTO;
 import com.gennari.investidor.models.AcaoModel;
 import com.gennari.investidor.services.AcaoService;
@@ -12,7 +14,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
@@ -40,17 +41,23 @@ public class AcaoController {
 
     @GetMapping
     public ResponseEntity<List<AcaoModel>> getAllAcoes(){
-        return ResponseEntity.status(HttpStatus.OK).body(acaoService.findAll());
+        List<AcaoModel> acaoList = acaoService.findAll();
+        if(!acaoList.isEmpty()){
+            for(AcaoModel acao : acaoList){
+                UUID id = acao.getAcaoId();
+                acao.add(linkTo(methodOn(AcaoController.class).getOneAcao(id)).withSelfRel());
+            }
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(acaoList);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Object> getOneAcao(@PathVariable(value="id") UUID id){
-
         Optional<AcaoModel> acao = acaoService.findById(id);
         if(acao.isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Ação inexistente");
-
         }
+        acao.get().add(linkTo(methodOn(AcaoController.class).getAllAcoes()).withSelfRel());
         return ResponseEntity.status(HttpStatus.OK).body(acao.get());
     }
 

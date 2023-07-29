@@ -6,6 +6,7 @@
 package com.gennari.investidor.models;
 
 import jakarta.persistence.*;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -17,7 +18,7 @@ import java.util.UUID;
  * e colunas no singular
  **/
 @Table(name="investidores")
-public class InvestidorModel implements Serializable {
+public class InvestidorModel extends RepresentationModel<InvestidorModel> implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
